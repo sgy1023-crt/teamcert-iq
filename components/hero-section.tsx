@@ -142,7 +142,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               </label>
               <Slider
                 value={[inputValues.practiceScore]}
-                onValueChange={([value]) => onInputChange({ practiceScore: value })}
+                onValueChange={(values) => onInputChange({ practiceScore: values[0] })}
                 min={0}
                 max={100}
                 step={1}
@@ -157,7 +157,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               </label>
               <Slider
                 value={[inputValues.availableStudyHoursPerWeek]}
-                onValueChange={([value]) => onInputChange({ availableStudyHoursPerWeek: value })}
+                onValueChange={(values) => onInputChange({ availableStudyHoursPerWeek: values[0] })}
                 min={0}
                 max={20}
                 step={1}
@@ -172,7 +172,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               </label>
               <Slider
                 value={[inputValues.meetingHoursPerWeek]}
-                onValueChange={([value]) => onInputChange({ meetingHoursPerWeek: value })}
+                onValueChange={(values) => onInputChange({ meetingHoursPerWeek: values[0] })}
                 min={0}
                 max={40}
                 step={1}
