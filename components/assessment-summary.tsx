@@ -15,9 +15,39 @@ export function AssessmentSummary({ result }: AssessmentSummaryProps) {
 
   const riskColor = riskColors[result.learnerProfile.baselineRisk]
 
+  const weakDomains = result.learningPath.recommendedSkills
+    .filter((s) => s.priority === "High")
+    .map((s) => s.skill)
+    .slice(0, 2)
+    .join(", ")
+
   return (
     <section className="w-full px-6 md:px-12 lg:px-16 py-8" id="assessment-complete">
       <div className="max-w-4xl mx-auto">
+        {/* What this result means */}
+        <div
+          className="mb-6 p-6 rounded-xl border-l-4"
+          style={{
+            background: "oklch(98% 0.008 260)",
+            borderLeftColor: "oklch(50% 0.18 260)",
+          }}
+        >
+          <p className="font-bold mb-2" style={{ fontSize: "1rem", color: "oklch(28% 0.015 250)" }}>
+            💡 What This Result Means
+          </p>
+          <p style={{ fontSize: "0.9375rem", color: "oklch(45% 0.025 250)", lineHeight: 1.7 }}>
+            Alex is <strong style={{ color: riskColor.text }}>not yet fully ready</strong> for AZ-204. TeamCert IQ identified{" "}
+            <strong style={{ color: riskColor.text }}>{result.learnerProfile.baselineRisk.toLowerCase()} readiness risk</strong> because
+            his practice score is low ({result.learnerProfile.practiceScore}%) and his weakest domains involve{" "}
+            <strong style={{ color: "oklch(30% 0.015 250)" }}>{weakDomains || "core certification skills"}</strong>.
+          </p>
+          <p style={{ fontSize: "0.9375rem", color: "oklch(45% 0.025 250)", lineHeight: 1.7, marginTop: "0.75rem" }}>
+            The system recommends a <strong style={{ color: "oklch(30% 0.015 250)" }}>{result.studyPlan.durationDays}-day focused study plan</strong> before
+            final certification review. For managers, Alex should be treated as <strong style={{ color: riskColor.text }}>"needs targeted support,"</strong> not
+            "ready for exam scheduling."
+          </p>
+        </div>
+
         <div
           className="p-8 rounded-2xl border-2"
           style={{
@@ -128,6 +158,41 @@ export function AssessmentSummary({ result }: AssessmentSummaryProps) {
               {result.recommendation}
             </p>
           </div>
+        </div>
+
+        {/* Why this is more than a chatbot */}
+        <div
+          className="mt-6 p-6 rounded-xl border"
+          style={{
+            background: "oklch(97% 0.008 250)",
+            borderColor: "oklch(85% 0.02 250)",
+          }}
+        >
+          <p className="font-bold mb-3" style={{ fontSize: "1rem", color: "oklch(28% 0.015 250)" }}>
+            🤖 Why This Is More Than a Chatbot
+          </p>
+          <ul className="space-y-2" style={{ fontSize: "0.875rem", color: "oklch(48% 0.025 250)", paddingLeft: "0" }}>
+            <li className="flex items-start gap-2">
+              <span style={{ color: "oklch(50% 0.18 260)", fontWeight: "bold" }}>•</span>
+              <span>It uses <strong style={{ color: "oklch(30% 0.015 250)" }}>multiple specialized agents</strong>, not a single generic response</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span style={{ color: "oklch(50% 0.18 260)", fontWeight: "bold" }}>•</span>
+              <span>It retrieves <strong style={{ color: "oklch(30% 0.015 250)" }}>grounded knowledge</strong> from synthetic certification materials</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span style={{ color: "oklch(50% 0.18 260)", fontWeight: "bold" }}>•</span>
+              <span>It produces <strong style={{ color: "oklch(30% 0.015 250)" }}>learner-facing and manager-facing</strong> outputs</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span style={{ color: "oklch(50% 0.18 260)", fontWeight: "bold" }}>•</span>
+              <span>It includes <strong style={{ color: "oklch(30% 0.015 250)" }}>verifier/safety checks</strong> and traceable evidence</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span style={{ color: "oklch(50% 0.18 260)", fontWeight: "bold" }}>•</span>
+              <span>It turns certification preparation into a <strong style={{ color: "oklch(30% 0.015 250)" }}>repeatable enterprise workflow</strong></span>
+            </li>
+          </ul>
         </div>
       </div>
     </section>

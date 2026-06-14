@@ -126,6 +126,25 @@ export function HeroSection({ onRunDemo, isLoading }: HeroSectionProps) {
               )}
             </span>
           </Button>
+
+          {/* What happens when you click */}
+          <div
+            className="mt-4 p-4 rounded-xl text-left"
+            style={{
+              background: "oklch(97% 0.008 260)",
+              border: "1px solid oklch(88% 0.02 260)",
+            }}
+          >
+            <p className="font-semibold mb-2" style={{ fontSize: "0.875rem", color: "oklch(30% 0.015 250)" }}>
+              What happens when you click:
+            </p>
+            <ol className="space-y-1.5" style={{ fontSize: "0.8125rem", color: "oklch(48% 0.025 250)", paddingLeft: "1.25rem" }}>
+              <li>Retrieve grounded certification knowledge from synthetic learning materials</li>
+              <li>Analyze Alex's learner profile and constraints</li>
+              <li>Generate a readiness score, weak-domain diagnosis, and personalized study plan</li>
+              <li>Produce manager-facing insights with verifier and citation checks</li>
+            </ol>
+          </div>
         </div>
 
         {/* Active Mode Banner */}
