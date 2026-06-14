@@ -194,6 +194,69 @@ export function AssessmentSummary({ result }: AssessmentSummaryProps) {
             </li>
           </ul>
         </div>
+
+        {/* How the score was calculated */}
+        <div
+          className="mt-6 p-6 rounded-xl border"
+          style={{
+            background: "oklch(97% 0.008 230)",
+            borderColor: "oklch(85% 0.02 230)",
+          }}
+        >
+          <p className="font-bold mb-3" style={{ fontSize: "1rem", color: "oklch(28% 0.015 250)" }}>
+            🔢 How the Score Was Calculated
+          </p>
+          <div className="space-y-2" style={{ fontSize: "0.875rem" }}>
+            <div className="flex justify-between items-center">
+              <span style={{ color: "oklch(48% 0.025 250)" }}>Practice score contribution:</span>
+              <span className="font-semibold" style={{ color: "oklch(30% 0.015 250)" }}>
+                +{result.scoreBreakdown.practiceScoreContribution}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span style={{ color: "oklch(48% 0.025 250)" }}>Time availability adjustment:</span>
+              <span className="font-semibold" style={{ color: "oklch(38% 0.12 160)" }}>
+                +{result.scoreBreakdown.timeAvailabilityAdjustment}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span style={{ color: "oklch(48% 0.025 250)" }}>Meeting load penalty:</span>
+              <span className="font-semibold" style={{ color: "oklch(45% 0.15 20)" }}>
+                {result.scoreBreakdown.meetingLoadPenalty}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span style={{ color: "oklch(48% 0.025 250)" }}>Weak domain penalty:</span>
+              <span className="font-semibold" style={{ color: "oklch(45% 0.15 20)" }}>
+                {result.scoreBreakdown.weakDomainPenalty}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span style={{ color: "oklch(48% 0.025 250)" }}>Evidence/verifier bonus:</span>
+              <span className="font-semibold" style={{ color: "oklch(38% 0.12 160)" }}>
+                +{result.scoreBreakdown.evidenceBonus}
+              </span>
+            </div>
+            <div
+              className="flex justify-between items-center pt-3 mt-3"
+              style={{ borderTop: "1px solid oklch(90% 0.006 250)" }}
+            >
+              <span className="font-bold" style={{ color: "oklch(28% 0.015 250)" }}>Final Readiness Score:</span>
+              <span
+                className="font-bold text-xl"
+                style={{
+                  color: "oklch(50% 0.18 260)",
+                }}
+              >
+                {result.scoreBreakdown.finalScore}/100
+              </span>
+            </div>
+          </div>
+          <p className="mt-3 text-xs" style={{ color: "oklch(55% 0.025 250)", fontStyle: "italic" }}>
+            This demo uses a transparent input-driven scoring engine and synthetic grounded knowledge retrieval.
+            The architecture is Foundry-ready for real model-backed evaluation.
+          </p>
+        </div>
       </div>
     </section>
   )

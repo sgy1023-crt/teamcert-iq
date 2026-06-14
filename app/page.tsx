@@ -9,12 +9,50 @@ import { AssessmentSummary } from "@/components/assessment-summary"
 import { ResultsTabs } from "@/components/results-tabs"
 import type { FinalOutput, LearnerInput, AgentTrace } from "@/lib/types"
 
+// Demo candidate presets
+const demoCandidates = {
+  alex: {
+    name: "Alex Chen",
+    role: "Cloud Engineer",
+    certification: "AZ-204",
+    meetingHoursPerWeek: 30,
+    focusHoursPerWeek: 3,
+    availableStudyHoursPerWeek: 4,
+    practiceScore: 42,
+    preferredLearningSlot: "Morning" as const,
+    expectedReadiness: "45-55",
+  },
+  maya: {
+    name: "Maya Patel",
+    role: "DevOps Engineer",
+    certification: "AZ-400",
+    meetingHoursPerWeek: 20,
+    focusHoursPerWeek: 8,
+    availableStudyHoursPerWeek: 7,
+    practiceScore: 71,
+    preferredLearningSlot: "Afternoon" as const,
+    expectedReadiness: "68-78",
+  },
+  jordan: {
+    name: "Jordan Lee",
+    role: "Data Engineer",
+    certification: "DP-203",
+    meetingHoursPerWeek: 12,
+    focusHoursPerWeek: 15,
+    availableStudyHoursPerWeek: 10,
+    practiceScore: 86,
+    preferredLearningSlot: "Evening" as const,
+    expectedReadiness: "82-92",
+  },
+}
+
 export default function Home() {
   const [showResults, setShowResults] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [assessmentResult, setAssessmentResult] = useState<FinalOutput | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [agentTraces, setAgentTraces] = useState<AgentTrace[]>([])
+  const [selectedCandidate, setSelectedCandidate] = useState<"alex" | "maya" | "jordan">("alex")
   const resultsRef = useRef<HTMLDivElement>(null)
 
   // 模拟 agent 进度（实际应该通过 WebSocket 或轮询获取）
@@ -31,15 +69,16 @@ export default function Home() {
     setAgentTraces([])
 
     try {
-      // Default demo input
+      const candidate = demoCandidates[selectedCandidate]
+
       const input: LearnerInput = {
-        role: "Cloud Engineer",
-        certification: "AZ-204",
-        meetingHoursPerWeek: 6,
-        focusHoursPerWeek: 3,
-        availableStudyHoursPerWeek: 2,
-        practiceScore: 42,
-        preferredLearningSlot: "Morning",
+        role: candidate.role,
+        certification: candidate.certification,
+        meetingHoursPerWeek: candidate.meetingHoursPerWeek,
+        focusHoursPerWeek: candidate.focusHoursPerWeek,
+        availableStudyHoursPerWeek: candidate.availableStudyHoursPerWeek,
+        practiceScore: candidate.practiceScore,
+        preferredLearningSlot: candidate.preferredLearningSlot,
         viewMode: "Summary",
       }
 
@@ -154,7 +193,12 @@ export default function Home() {
 
       <main>
         {/* Hero */}
-        <HeroSection onRunDemo={handleRunDemo} isLoading={isLoading} />
+        <HeroSection
+          onRunDemo={handleRunDemo}
+          isLoading={isLoading}
+          selectedCandidate={selectedCandidate}
+          onCandidateChange={setSelectedCandidate}
+        />
 
         {/* Divider */}
         <div

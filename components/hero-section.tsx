@@ -8,6 +8,8 @@ import { DemoScenarioCard } from "./demo-scenario-card"
 interface HeroSectionProps {
   onRunDemo: () => void
   isLoading?: boolean
+  selectedCandidate: "alex" | "maya" | "jordan"
+  onCandidateChange: (candidate: "alex" | "maya" | "jordan") => void
 }
 
 const badges = [
@@ -17,7 +19,13 @@ const badges = [
   { icon: "🔄", label: "7-Agent Workflow" },
 ]
 
-export function HeroSection({ onRunDemo, isLoading }: HeroSectionProps) {
+const candidateInfo = {
+  alex: { name: "Alex Chen", role: "Cloud Engineer", cert: "AZ-204", score: 42, readiness: "45-55" },
+  maya: { name: "Maya Patel", role: "DevOps Engineer", cert: "AZ-400", score: 71, readiness: "68-78" },
+  jordan: { name: "Jordan Lee", role: "Data Engineer", cert: "DP-203", score: 86, readiness: "82-92" },
+}
+
+export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange }: HeroSectionProps) {
   return (
     <section className="w-full py-16 md:py-24 px-6 md:px-12 lg:px-16 text-center">
       {/* Title */}
@@ -71,8 +79,45 @@ export function HeroSection({ onRunDemo, isLoading }: HeroSectionProps) {
           ))}
         </div>
 
+        {/* Candidate Selector */}
+        <div className="mt-8 max-w-2xl mx-auto">
+          <p className="font-semibold mb-3" style={{ fontSize: "0.9375rem", color: "oklch(30% 0.015 250)" }}>
+            Select Demo Candidate:
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {(["alex", "maya", "jordan"] as const).map((key) => {
+              const info = candidateInfo[key]
+              const isSelected = selectedCandidate === key
+              return (
+                <button
+                  key={key}
+                  onClick={() => onCandidateChange(key)}
+                  disabled={isLoading}
+                  className="flex-1 min-w-[200px] p-4 rounded-xl border-2 text-left transition-all duration-200"
+                  style={{
+                    background: isSelected ? "oklch(96% 0.015 260)" : "oklch(100% 0 0)",
+                    borderColor: isSelected ? "oklch(50% 0.18 260)" : "oklch(88% 0.008 250)",
+                    cursor: isLoading ? "not-allowed" : "pointer",
+                    opacity: isLoading ? 0.6 : 1,
+                  }}
+                >
+                  <p className="font-bold" style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)" }}>
+                    {info.name}
+                  </p>
+                  <p style={{ fontSize: "0.8125rem", color: "oklch(52% 0.025 250)", marginTop: "0.25rem" }}>
+                    {info.role} · {info.cert}
+                  </p>
+                  <p style={{ fontSize: "0.8125rem", color: "oklch(48% 0.025 250)", marginTop: "0.25rem" }}>
+                    Practice: {info.score}% · Expected: {info.readiness}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Demo Scenario Card */}
-        <DemoScenarioCard />
+        <DemoScenarioCard selectedCandidate={selectedCandidate} />
 
         {/* CTA Button */}
         <div className="mt-8 max-w-lg mx-auto">

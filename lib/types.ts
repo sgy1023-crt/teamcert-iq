@@ -97,4 +97,12 @@ export interface FinalOutput {
   readinessScore: number
   readinessLevel: "Low" | "Moderate" | "High"
   recommendation: string
+  scoreBreakdown: {
+    practiceScoreContribution: number
+    timeAvailabilityAdjustment: number
+    meetingLoadPenalty: number
+    weakDomainPenalty: number
+    evidenceBonus: number
+    finalScore: number
+  }
 }

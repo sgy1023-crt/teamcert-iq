@@ -57,9 +57,10 @@ export class Coordinator {
     traces.push(trace6)
 
     // Step 7: Compose final output
-    const { readinessScore, readinessLevel, recommendation } = this.calculateReadiness(
+    const { readinessScore, readinessLevel, recommendation, scoreBreakdown } = this.calculateReadiness(
       profile,
       learningPath,
+      studyPlan,
       verifierReport
     )
 
@@ -74,6 +75,7 @@ export class Coordinator {
       readinessScore,
       readinessLevel,
       recommendation,
+      scoreBreakdown,
     }
 
     return finalOutput
@@ -82,32 +84,62 @@ export class Coordinator {
   private calculateReadiness(
     profile: any,
     learningPath: any,
+    studyPlan: any,
     verifierReport: any
-  ): { readinessScore: number; readinessLevel: "Low" | "Moderate" | "High"; recommendation: string } {
-    // Calculate readiness score based on multiple factors
-    let score = 50 // Base score
+  ): {
+    readinessScore: number
+    readinessLevel: "Low" | "Moderate" | "High"
+    recommendation: string
+    scoreBreakdown: {
+      practiceScoreContribution: number
+      timeAvailabilityAdjustment: number
+      meetingLoadPenalty: number
+      weakDomainPenalty: number
+      evidenceBonus: number
+      finalScore: number
+    }
+  } {
+    // Start from practice score as base
+    let practiceScoreContribution = profile.practiceScore
 
-    // Practice score contribution (0-30 points)
-    score += (profile.practiceScore / 100) * 30
-
-    // Risk level impact (-20 to +10 points)
-    if (profile.baselineRisk === "Low") {
-      score += 10
-    } else if (profile.baselineRisk === "High") {
-      score -= 20
+    // Time availability adjustment (0 to +15 points)
+    let timeAvailabilityAdjustment = 0
+    if (profile.availableHoursPerWeek >= 10) {
+      timeAvailabilityAdjustment = 15
+    } else if (profile.availableHoursPerWeek >= 6) {
+      timeAvailabilityAdjustment = 8
+    } else if (profile.availableHoursPerWeek >= 3) {
+      timeAvailabilityAdjustment = 3
     }
 
-    // Verifier quality bonus (0-10 points)
-    score += verifierReport.citationCoverage * 10
+    // Meeting load penalty (0 to -20 points)
+    let meetingLoadPenalty = 0
+    if (profile.meetingHoursPerWeek > 25) {
+      meetingLoadPenalty = -20
+    } else if (profile.meetingHoursPerWeek > 20) {
+      meetingLoadPenalty = -12
+    } else if (profile.meetingHoursPerWeek > 15) {
+      meetingLoadPenalty = -6
+    }
 
-    // Cap score at 0-100
-    score = Math.max(0, Math.min(100, score))
+    // Weak domain penalty (0 to -15 points)
+    const highPrioritySkills = learningPath.recommendedSkills.filter((s: any) => s.priority === "High")
+    let weakDomainPenalty = Math.min(highPrioritySkills.length * -5, -15)
+
+    // Evidence/verifier bonus (0 to +10 points)
+    let evidenceBonus = Math.round(verifierReport.citationCoverage * 10)
+
+    // Calculate final score
+    let finalScore = practiceScoreContribution + timeAvailabilityAdjustment + meetingLoadPenalty + weakDomainPenalty + evidenceBonus
+
+    // Clamp to 0-100
+    finalScore = Math.max(0, Math.min(100, finalScore))
 
     // Determine readiness level
     let readinessLevel: "Low" | "Moderate" | "High" = "Moderate"
-    if (score >= 75) {
+    if (finalScore >= 75) {
       readinessLevel = "High"
-    } else if (score < 50) {
+    } else if (finalScore < 50) {
       readinessLevel = "Low"
     }
 
@@ -116,20 +148,23 @@ export class Coordinator {
     if (readinessLevel === "High") {
       recommendation = `You are well-positioned for ${profile.certification}. Focus on high-priority gaps and schedule your exam within 4-6 weeks.`
     } else if (readinessLevel === "Moderate") {
-      recommendation = `You are moderately ready for ${profile.certification}. A ${
-        studyPlan.durationDays
-      }-day intensive study plan is recommended, focusing on ${learningPath.recommendedSkills
-        .filter((s: any) => s.priority === "High")
-        .map((s: any) => s.skill)
-        .join(", ")}.`
+      recommendation = `You are moderately ready for ${profile.certification}. A ${studyPlan.durationDays}-day intensive study plan is recommended, focusing on ${highPrioritySkills.map((s: any) => s.skill).join(", ")}.`
     } else {
       recommendation = `Extend your preparation timeline for ${profile.certification}. Address foundational gaps before attempting the exam. Consider baseline skill building for 8-12 weeks.`
     }
 
     return {
-      readinessScore: Math.round(score),
+      readinessScore: Math.round(finalScore),
       readinessLevel,
       recommendation,
+      scoreBreakdown: {
+        practiceScoreContribution,
+        timeAvailabilityAdjustment,
+        meetingLoadPenalty,
+        weakDomainPenalty,
+        evidenceBonus,
+        finalScore: Math.round(finalScore),
+      },
     }
   }
 }
