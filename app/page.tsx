@@ -91,10 +91,17 @@ export default function Home() {
   }, [isLoading, assessmentResult])
 
   const handleRunDemo = async () => {
-    if (showResults) return
-    setIsLoading(true)
+    // Allow re-running: clear previous results so the run visibly restarts
+    setShowResults(false)
+    setAssessmentResult(null)
     setError(null)
     setAgentTraces([])
+    // Scroll back to top so the user sees the loading flow from the start
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+
+    setIsLoading(true)
 
     try {
       // Use current input values (may be modified by user)
