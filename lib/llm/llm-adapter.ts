@@ -236,12 +236,16 @@ function buildChatRequest(p: Provider, model: string, system: string, user: stri
 
   const body: any = {
     temperature: 0.4,
-    response_format: { type: "json_object" },
     stream: false,
     messages: [
       { role: "system", content: system },
       { role: "user", content: user },
     ],
+  }
+
+  // Only add response_format for providers that support it (not Grok)
+  if (!p.name.includes("grok")) {
+    body.response_format = { type: "json_object" }
   }
 
   if (p.isAzure) {
