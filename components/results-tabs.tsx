@@ -378,9 +378,9 @@ export function ResultsTabs({ result }: ResultsTabsProps) {
           <TabsContent value="manager" className="animate-fadeIn">
             <ContentCard title="👔 Manager Insights">
               {/* Generation mode badge */}
-              <div className="flex items-center gap-2 mb-5">
+              <div className="flex flex-col gap-2 mb-5">
                 <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border w-fit"
                   style={
                     result.managerInsights.generationMode === "llm"
                       ? { background: "oklch(94% 0.04 160)", borderColor: "oklch(70% 0.12 160)", color: "oklch(38% 0.14 160)" }
@@ -389,6 +389,24 @@ export function ResultsTabs({ result }: ResultsTabsProps) {
                 >
                   {result.managerInsights.generationMode === "llm" ? "✨ Manager Insight: LLM-assisted" : "⚙️ Manager Insight: Local fallback"}
                 </span>
+                {result.managerInsights.generationMode === "llm" && (result.managerInsights.llmProvider || result.managerInsights.llmModel) && (
+                  <p className="text-xs font-mono" style={{ color: "oklch(50% 0.025 250)" }}>
+                    Generated via{" "}
+                    {result.managerInsights.llmProvider && (
+                      <span className="font-semibold" style={{ color: "oklch(40% 0.10 160)" }}>
+                        {result.managerInsights.llmProvider}
+                      </span>
+                    )}
+                    {result.managerInsights.llmModel && (
+                      <>
+                        {" / "}
+                        <span style={{ color: "oklch(45% 0.08 160)" }}>
+                          {result.managerInsights.llmModel}
+                        </span>
+                      </>
+                    )}
+                  </p>
+                )}
               </div>
 
               {/* LLM narrative (only present when an LLM backend is configured) */}

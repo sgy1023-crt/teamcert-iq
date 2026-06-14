@@ -1,12 +1,16 @@
-// Status endpoint — tells the frontend whether a real LLM backend is
-// configured, so the homepage can show the Manager Insight mode upfront
-// before any assessment runs. Does NOT leak the key itself.
+// Status endpoint — tells the frontend which LLM provider is configured,
+// so the homepage can show it before any assessment runs.
+// Does NOT leak the key itself.
 import { NextResponse } from "next/server"
-import { isLLMConfigured } from "@/lib/llm/llm-adapter"
+import { getProviderInfo, isLLMConfigured } from "@/lib/llm/llm-adapter"
 
 export async function GET() {
+  const info = getProviderInfo()
   return NextResponse.json({
     llmConfigured: isLLMConfigured(),
     managerMode: isLLMConfigured() ? "llm" : "local",
+    provider: info?.name ?? null,
+    defaultModel: info?.defaultModel ?? null,
+    isAzure: info?.isAzure ?? false,
   })
 }

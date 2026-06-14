@@ -95,7 +95,8 @@ export class ManagerInsightsAgent {
       citationCoverage: ctx.verifier.citationCoverage,
     }
 
-    const llmOutput = await generateManagerInsight(llmInput)
+    const llmResult = await generateManagerInsight(llmInput)
+    const llmOutput = llmResult?.output
 
     const result: ManagerInsights = {
       riskSummary,
@@ -106,15 +107,17 @@ export class ManagerInsightsAgent {
       coachingRecommendation: llmOutput?.coachingRecommendation,
       riskExplanation: llmOutput?.riskExplanation,
       nextBestAction: llmOutput?.nextBestAction,
-      generationMode: llmOutput ? "llm" : "local",
+      generationMode: llmResult ? "llm" : "local",
+      llmProvider: llmResult?.provider,
+      llmModel: llmResult?.model,
     }
 
     const trace: AgentTrace = {
       agentName: "Manager Insights Agent",
       status: "done",
       detail:
-        llmOutput
-          ? `Generated manager coaching narrative via LLM (${ctx.readinessScore}/100 ${ctx.readinessLevel}, ${riskLevel} risk). Mode: LLM-assisted.`
+        llmResult
+          ? `Generated manager coaching via ${llmResult.provider}/${llmResult.model} (${ctx.readinessScore}/100 ${ctx.readinessLevel}, ${riskLevel} risk). Mode: LLM-assisted.`
           : `Synthesized executive summary locally (${riskLevel} risk, ${recommendations.length} recommendations). Mode: local fallback.`,
       timestamp: Date.now() - startTime,
     }

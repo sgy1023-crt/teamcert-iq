@@ -65,6 +65,8 @@ interface HeroSectionProps {
   inputValues: LearnerInput
   onInputChange: (values: Partial<LearnerInput>) => void
   llmConfigured: boolean | null
+  llmProvider?: string | null
+  llmDefaultModel?: string | null
 }
 
 const badges = [
@@ -80,7 +82,7 @@ const candidateInfo = {
   jordan: { name: "Jordan Lee", role: "Data Engineer", cert: "DP-203", score: 86, readiness: "82-92" },
 }
 
-export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange, inputValues, onInputChange, llmConfigured }: HeroSectionProps) {
+export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange, inputValues, onInputChange, llmConfigured, llmProvider, llmDefaultModel }: HeroSectionProps) {
   return (
     <section className="w-full py-16 md:py-24 px-6 md:px-12 lg:px-16 text-center">
       {/* Title */}
@@ -359,11 +361,43 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               "checking LLM backend…"
             ) : llmConfigured ? (
               <>
-                <strong>LLM-assisted</strong> — a real model generates the manager coaching narrative. Scoring & verifier stay deterministic.
+                <strong>LLM-assisted</strong> via{" "}
+                <code className="px-1 py-0.5 rounded" style={{ background: "oklch(90% 0.02 160)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                  {llmProvider || "custom"}
+                </code>
+                {llmDefaultModel && (
+                  <>
+                    {" / "}
+                    <code className="px-1 py-0.5 rounded" style={{ background: "oklch(90% 0.02 160)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                      {llmDefaultModel}
+                    </code>
+                  </>
+                )}
+                . Real model generates manager coaching narrative. Scoring & verifier stay deterministic.
               </>
             ) : (
               <>
-                <strong>Local fallback</strong> — deterministic template. Set <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>OPENAI_API_KEY</code> or <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>AZURE_OPENAI_API_KEY</code> to enable LLM-assisted mode.
+                <strong>Local fallback</strong> — deterministic template. Set{" "}
+                <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                  LLM_API_KEY
+                </code>{" / "}
+                <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                  OPENAI_API_KEY
+                </code>{" / "}
+                <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>
+                  DEEPSEEK_API_KEY
+                </code>
+                {" or any "}
+                <a
+                  href="https://github.com/yourusername/teamcert-iq#enabling-the-llm-optional"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: "oklch(50% 0.18 260)" }}
+                >
+                  OpenAI-compatible provider
+                </a>
+                .
               </>
             )}
           </p>

@@ -53,6 +53,8 @@ export default function Home() {
   const [agentTraces, setAgentTraces] = useState<AgentTrace[]>([])
   const [selectedCandidate, setSelectedCandidate] = useState<"alex" | "maya" | "jordan">("alex")
   const [llmConfigured, setLlmConfigured] = useState<boolean | null>(null)
+  const [llmProvider, setLlmProvider] = useState<string | null>(null)
+  const [llmDefaultModel, setLlmDefaultModel] = useState<string | null>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
 
   // On mount, ask the backend whether a real LLM is configured so the
@@ -60,7 +62,11 @@ export default function Home() {
   useEffect(() => {
     fetch("/api/status")
       .then((r) => r.json())
-      .then((d) => setLlmConfigured(Boolean(d.llmConfigured)))
+      .then((d) => {
+        setLlmConfigured(Boolean(d.llmConfigured))
+        setLlmProvider(d.provider || null)
+        setLlmDefaultModel(d.defaultModel || null)
+      })
       .catch(() => setLlmConfigured(false))
   }, [])
 
@@ -235,6 +241,8 @@ export default function Home() {
           inputValues={inputValues}
           onInputChange={(updates) => setInputValues({ ...inputValues, ...updates })}
           llmConfigured={llmConfigured}
+          llmProvider={llmProvider}
+          llmDefaultModel={llmDefaultModel}
         />
 
         {/* Divider */}

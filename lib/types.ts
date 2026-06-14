@@ -78,6 +78,9 @@ export interface ManagerInsights {
   nextBestAction?: string
   // "llm" = real LLM generated the narrative; "local" = deterministic template
   generationMode: "llm" | "local"
+  // Which provider/model produced the narrative (only when generationMode === "llm")
+  llmProvider?: string
+  llmModel?: string
 }
 
 export interface VerifierReport {
