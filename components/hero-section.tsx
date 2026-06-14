@@ -2,14 +2,18 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 import { DemoScenarioCard } from "./demo-scenario-card"
+import type { LearnerInput } from "@/lib/types"
 
 interface HeroSectionProps {
   onRunDemo: () => void
   isLoading?: boolean
   selectedCandidate: "alex" | "maya" | "jordan"
   onCandidateChange: (candidate: "alex" | "maya" | "jordan") => void
+  inputValues: LearnerInput
+  onInputChange: (values: Partial<LearnerInput>) => void
 }
 
 const badges = [
@@ -25,7 +29,7 @@ const candidateInfo = {
   jordan: { name: "Jordan Lee", role: "Data Engineer", cert: "DP-203", score: 86, readiness: "82-92" },
 }
 
-export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange }: HeroSectionProps) {
+export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange, inputValues, onInputChange }: HeroSectionProps) {
   return (
     <section className="w-full py-16 md:py-24 px-6 md:px-12 lg:px-16 text-center">
       {/* Title */}
@@ -118,6 +122,69 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
 
         {/* Demo Scenario Card */}
         <DemoScenarioCard selectedCandidate={selectedCandidate} />
+
+        {/* Editable Parameters */}
+        <div className="mt-6 mx-auto max-w-2xl">
+          <p className="font-semibold mb-3 text-left" style={{ fontSize: "0.9375rem", color: "oklch(30% 0.015 250)" }}>
+            ⚙️ Adjust Parameters (Optional):
+          </p>
+          <div
+            className="p-6 rounded-xl border text-left space-y-4"
+            style={{
+              background: "oklch(100% 0 0)",
+              borderColor: "oklch(88% 0.008 250)",
+            }}
+          >
+            {/* Practice Score */}
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
+                Practice Score: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.practiceScore}%</span>
+              </label>
+              <Slider
+                value={[inputValues.practiceScore]}
+                onValueChange={([value]) => onInputChange({ practiceScore: value })}
+                min={0}
+                max={100}
+                step={1}
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Available Study Hours */}
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
+                Available Study Hours/Week: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.availableStudyHoursPerWeek}h</span>
+              </label>
+              <Slider
+                value={[inputValues.availableStudyHoursPerWeek]}
+                onValueChange={([value]) => onInputChange({ availableStudyHoursPerWeek: value })}
+                min={0}
+                max={20}
+                step={1}
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Meeting Hours */}
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
+                Meeting Hours/Week: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.meetingHoursPerWeek}h</span>
+              </label>
+              <Slider
+                value={[inputValues.meetingHoursPerWeek]}
+                onValueChange={([value]) => onInputChange({ meetingHoursPerWeek: value })}
+                min={0}
+                max={40}
+                step={1}
+                disabled={isLoading}
+              />
+            </div>
+
+            <p className="text-xs" style={{ color: "oklch(55% 0.025 250)", fontStyle: "italic" }}>
+              Tip: Select a preset candidate above, then adjust these parameters to see how scores change dynamically.
+            </p>
+          </div>
+        </div>
 
         {/* CTA Button */}
         <div className="mt-8 max-w-lg mx-auto">

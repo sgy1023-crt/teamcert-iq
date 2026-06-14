@@ -55,6 +55,34 @@ export default function Home() {
   const [selectedCandidate, setSelectedCandidate] = useState<"alex" | "maya" | "jordan">("alex")
   const resultsRef = useRef<HTMLDivElement>(null)
 
+  // Current input values (editable by user)
+  const [inputValues, setInputValues] = useState<LearnerInput>({
+    role: demoCandidates.alex.role,
+    certification: demoCandidates.alex.certification,
+    meetingHoursPerWeek: demoCandidates.alex.meetingHoursPerWeek,
+    focusHoursPerWeek: demoCandidates.alex.focusHoursPerWeek,
+    availableStudyHoursPerWeek: demoCandidates.alex.availableStudyHoursPerWeek,
+    practiceScore: demoCandidates.alex.practiceScore,
+    preferredLearningSlot: demoCandidates.alex.preferredLearningSlot,
+    viewMode: "Summary",
+  })
+
+  // When candidate changes, update input values
+  const handleCandidateChange = (candidateKey: "alex" | "maya" | "jordan") => {
+    setSelectedCandidate(candidateKey)
+    const candidate = demoCandidates[candidateKey]
+    setInputValues({
+      role: candidate.role,
+      certification: candidate.certification,
+      meetingHoursPerWeek: candidate.meetingHoursPerWeek,
+      focusHoursPerWeek: candidate.focusHoursPerWeek,
+      availableStudyHoursPerWeek: candidate.availableStudyHoursPerWeek,
+      practiceScore: candidate.practiceScore,
+      preferredLearningSlot: candidate.preferredLearningSlot,
+      viewMode: "Summary",
+    })
+  }
+
   // 模拟 agent 进度（实际应该通过 WebSocket 或轮询获取）
   useEffect(() => {
     if (isLoading && assessmentResult) {
@@ -69,23 +97,11 @@ export default function Home() {
     setAgentTraces([])
 
     try {
-      const candidate = demoCandidates[selectedCandidate]
-
-      const input: LearnerInput = {
-        role: candidate.role,
-        certification: candidate.certification,
-        meetingHoursPerWeek: candidate.meetingHoursPerWeek,
-        focusHoursPerWeek: candidate.focusHoursPerWeek,
-        availableStudyHoursPerWeek: candidate.availableStudyHoursPerWeek,
-        practiceScore: candidate.practiceScore,
-        preferredLearningSlot: candidate.preferredLearningSlot,
-        viewMode: "Summary",
-      }
-
+      // Use current input values (may be modified by user)
       const response = await fetch("/api/assess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
+        body: JSON.stringify(inputValues),
       })
 
       if (!response.ok) {
@@ -197,7 +213,9 @@ export default function Home() {
           onRunDemo={handleRunDemo}
           isLoading={isLoading}
           selectedCandidate={selectedCandidate}
-          onCandidateChange={setSelectedCandidate}
+          onCandidateChange={handleCandidateChange}
+          inputValues={inputValues}
+          onInputChange={(updates) => setInputValues({ ...inputValues, ...updates })}
         />
 
         {/* Divider */}
