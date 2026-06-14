@@ -154,7 +154,7 @@ function AgentStep({ step, name, status, detail }: { step: number; name: string;
 export function ResultsTabs({ result }: ResultsTabsProps) {
   return (
     <section className="w-full px-6 md:px-12 lg:px-16 py-8 pb-20">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <Tabs defaultValue="recommendation">
           <div className="overflow-x-auto">
             <TabsList

@@ -33,7 +33,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
   return (
     <section className="w-full py-16 md:py-24 px-6 md:px-12 lg:px-16 text-center">
       {/* Title */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <h1
           className="text-balance font-extrabold leading-tight tracking-tight"
           style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", color: "oklch(22% 0.015 250)" }}
@@ -84,7 +84,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
         </div>
 
         {/* Candidate Selector */}
-        <div className="mt-8 max-w-2xl mx-auto">
+        <div className="mt-8 max-w-5xl mx-auto">
           <p className="font-semibold mb-3" style={{ fontSize: "0.9375rem", color: "oklch(30% 0.015 250)" }}>
             Select Demo Candidate:
           </p>
@@ -124,7 +124,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
         <DemoScenarioCard selectedCandidate={selectedCandidate} />
 
         {/* Editable Parameters */}
-        <div className="mt-6 mx-auto max-w-2xl">
+        <div className="mt-6 mx-auto max-w-5xl">
           <p className="font-semibold mb-3 text-left" style={{ fontSize: "0.9375rem", color: "oklch(30% 0.015 250)" }}>
             ⚙️ Adjust Parameters (Optional):
           </p>
@@ -273,7 +273,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
 
         {/* Active Mode Banner */}
         <div
-          className="mt-8 mx-auto max-w-2xl flex items-start gap-3 px-5 py-4 rounded-xl border text-left"
+          className="mt-8 mx-auto max-w-5xl flex items-start gap-3 px-5 py-4 rounded-xl border text-left"
           style={{
             background: "oklch(97% 0.008 230)",
             borderColor: "oklch(82% 0.03 230)",
@@ -308,7 +308,7 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
         {/* Manager Insight mode — surfaced on the homepage so judges see
             the hybrid architecture before running anything. */}
         <div
-          className="mt-3 mx-auto max-w-2xl flex items-start gap-3 px-5 py-4 rounded-xl border text-left"
+          className="mt-3 mx-auto max-w-5xl flex items-start gap-3 px-5 py-4 rounded-xl border text-left"
           style={
             llmConfigured
               ? { background: "oklch(96% 0.03 160)", borderColor: "oklch(80% 0.10 160)" }

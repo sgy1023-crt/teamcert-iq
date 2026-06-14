@@ -23,7 +23,7 @@ export function AssessmentSummary({ result }: AssessmentSummaryProps) {
 
   return (
     <section className="w-full px-6 md:px-12 lg:px-16 py-8" id="assessment-complete">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* What this result means */}
         <div
           className="mb-6 p-6 rounded-xl border-l-4"

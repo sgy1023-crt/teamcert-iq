@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react"
 import { HeroSection } from "@/components/hero-section"
 import { SystemOverview } from "@/components/system-overview"
-import { AdvancedConfig } from "@/components/advanced-config"
 import { AgentProgress } from "@/components/agent-progress"
 import { AssessmentSummary } from "@/components/assessment-summary"
 import { ResultsTabs } from "@/components/results-tabs"
@@ -240,7 +239,7 @@ export default function Home() {
 
         {/* Divider */}
         <div
-          className="mx-6 md:mx-12 lg:mx-16 max-w-5xl xl:mx-auto"
+          className="mx-6 md:mx-12 lg:mx-16 max-w-7xl xl:mx-auto"
           style={{ borderTop: "1px solid oklch(90% 0.006 250)" }}
           role="separator"
           aria-hidden="true"
@@ -251,21 +250,18 @@ export default function Home() {
 
         {/* Divider */}
         <div
-          className="mx-6 md:mx-12 lg:mx-16 max-w-5xl xl:mx-auto"
+          className="mx-6 md:mx-12 lg:mx-16 max-w-7xl xl:mx-auto"
           style={{ borderTop: "1px solid oklch(90% 0.006 250)" }}
           role="separator"
           aria-hidden="true"
         />
-
-        {/* Advanced Configuration */}
-        <AdvancedConfig onGenerateCustom={handleGenerateCustom} isLoading={isLoading} />
 
         {/* Agent Progress - Show when loading */}
         {isLoading && <AgentProgress traces={agentTraces} />}
 
         {/* Error message */}
         {error && (
-          <div className="px-6 md:px-12 lg:px-16 pb-8 max-w-5xl mx-auto">
+          <div className="px-6 md:px-12 lg:px-16 pb-8 max-w-7xl mx-auto">
             <div
               className="flex items-start gap-3 p-5 rounded-xl border"
               style={{
@@ -291,7 +287,7 @@ export default function Home() {
         {showResults && assessmentResult && (
           <div ref={resultsRef}>
             <div
-              className="mx-6 md:mx-12 lg:mx-16 max-w-5xl xl:mx-auto mb-8"
+              className="mx-6 md:mx-12 lg:mx-16 max-w-7xl xl:mx-auto mb-8"
               style={{ borderTop: "1px solid oklch(90% 0.006 250)" }}
               role="separator"
               aria-hidden="true"
@@ -302,7 +298,7 @@ export default function Home() {
 
             {/* Detailed Results Tabs */}
             <section id="results-section" className="mt-8">
-              <div className="px-6 md:px-12 lg:px-16 max-w-5xl mx-auto mb-4">
+              <div className="px-6 md:px-12 lg:px-16 max-w-7xl mx-auto mb-4">
                 <h3
                   className="font-bold"
                   style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.5rem)", color: "oklch(22% 0.015 250)" }}
@@ -320,7 +316,7 @@ export default function Home() {
 
         {/* Empty state when results not shown */}
         {!showResults && (
-          <div className="px-6 md:px-12 lg:px-16 pb-24 max-w-5xl mx-auto">
+          <div className="px-6 md:px-12 lg:px-16 pb-24 max-w-7xl mx-auto">
             <div
               className="flex flex-col items-center justify-center py-16 rounded-2xl border"
               style={{
@@ -353,7 +349,7 @@ export default function Home() {
           borderColor: "oklch(88% 0.008 250)",
         }}
       >
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
             <span className="text-base" aria-hidden="true">🎓</span>
             <span

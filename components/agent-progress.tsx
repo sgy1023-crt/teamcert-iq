@@ -31,7 +31,7 @@ export function AgentProgress({ traces }: AgentProgressProps) {
 
   return (
     <section className="w-full px-6 md:px-12 lg:px-16 py-12">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h2
             className="font-bold mb-2"
