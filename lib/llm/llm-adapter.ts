@@ -237,6 +237,7 @@ function buildChatRequest(p: Provider, model: string, system: string, user: stri
   const body: any = {
     temperature: 0.4,
     response_format: { type: "json_object" },
+    stream: false,
     messages: [
       { role: "system", content: system },
       { role: "user", content: user },
