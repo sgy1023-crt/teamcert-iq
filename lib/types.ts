@@ -9,6 +9,9 @@ export interface LearnerInput {
   practiceScore: number
   preferredLearningSlot: "Morning" | "Afternoon" | "Evening" | "Weekend"
   viewMode: "Summary" | "Detailed" | "Executive"
+  // Optional display name for narrative generation (e.g. "Alex Chen").
+  // Falls back to role if absent.
+  candidateName?: string
 }
 
 export interface LearnerProfile {
@@ -68,6 +71,13 @@ export interface ManagerInsights {
   teamRecommendations: string[]
   riskLevel: "Low" | "Medium" | "High"
   interventions: string[]
+  // LLM-enhanced narrative fields (populated when LLM is configured, else fallback)
+  managerSummary?: string
+  coachingRecommendation?: string
+  riskExplanation?: string
+  nextBestAction?: string
+  // "llm" = real LLM generated the narrative; "local" = deterministic template
+  generationMode: "llm" | "local"
 }
 
 export interface VerifierReport {

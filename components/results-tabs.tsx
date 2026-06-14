@@ -24,6 +24,26 @@ interface ContentCardProps {
   children: React.ReactNode
 }
 
+function NarrativeBlock({ label, text, highlight }: { label: string; text: string; highlight?: boolean }) {
+  return (
+    <div
+      className="p-4 rounded-xl border"
+      style={
+        highlight
+          ? { background: "oklch(96% 0.025 160)", borderColor: "oklch(80% 0.10 160)" }
+          : { background: "oklch(100% 0 0)", borderColor: "oklch(90% 0.006 250)" }
+      }
+    >
+      <p className="font-semibold mb-1.5" style={{ fontSize: "0.8125rem", color: "oklch(45% 0.02 250)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        {label}
+      </p>
+      <p style={{ fontSize: "0.9375rem", color: "oklch(30% 0.015 250)", lineHeight: 1.7 }}>
+        {text}
+      </p>
+    </div>
+  )
+}
+
 function ContentCard({ title, children }: ContentCardProps) {
   return (
     <div
@@ -357,11 +377,45 @@ export function ResultsTabs({ result }: ResultsTabsProps) {
           {/* Tab 5: Manager Insights */}
           <TabsContent value="manager" className="animate-fadeIn">
             <ContentCard title="👔 Manager Insights">
+              {/* Generation mode badge */}
+              <div className="flex items-center gap-2 mb-5">
+                <span
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border"
+                  style={
+                    result.managerInsights.generationMode === "llm"
+                      ? { background: "oklch(94% 0.04 160)", borderColor: "oklch(70% 0.12 160)", color: "oklch(38% 0.14 160)" }
+                      : { background: "oklch(96% 0.012 260)", borderColor: "oklch(82% 0.03 260)", color: "oklch(42% 0.10 260)" }
+                  }
+                >
+                  {result.managerInsights.generationMode === "llm" ? "✨ Manager Insight: LLM-assisted" : "⚙️ Manager Insight: Local fallback"}
+                </span>
+              </div>
+
+              {/* LLM narrative (only present when an LLM backend is configured) */}
+              {result.managerInsights.generationMode === "llm" && (
+                <div className="space-y-4 mb-6">
+                  {result.managerInsights.managerSummary && (
+                    <NarrativeBlock label="Manager Summary" text={result.managerInsights.managerSummary} />
+                  )}
+                  {result.managerInsights.riskExplanation && (
+                    <NarrativeBlock label="Risk Explanation" text={result.managerInsights.riskExplanation} />
+                  )}
+                  {result.managerInsights.coachingRecommendation && (
+                    <NarrativeBlock label="Coaching Recommendation" text={result.managerInsights.coachingRecommendation} />
+                  )}
+                  {result.managerInsights.nextBestAction && (
+                    <NarrativeBlock label="Next Best Action" text={result.managerInsights.nextBestAction} highlight />
+                  )}
+                </div>
+              )}
+
               <div
                 className="p-5 rounded-xl mb-6"
                 style={{ background: "oklch(97% 0.008 250)", border: "1px solid oklch(90% 0.006 250)" }}
               >
-                <p className="font-semibold mb-1" style={{ color: "oklch(28% 0.015 250)" }}>Executive Summary</p>
+                <p className="font-semibold mb-1" style={{ color: "oklch(28% 0.015 250)" }}>
+                  {result.managerInsights.generationMode === "llm" ? "Deterministic Risk Summary" : "Executive Summary"}
+                </p>
                 <p style={{ fontSize: "0.9375rem", color: "oklch(48% 0.025 250)", lineHeight: 1.7 }}>
                   {result.managerInsights.riskSummary}
                 </p>

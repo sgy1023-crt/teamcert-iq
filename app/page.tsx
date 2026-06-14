@@ -65,6 +65,7 @@ export default function Home() {
     practiceScore: demoCandidates.alex.practiceScore,
     preferredLearningSlot: demoCandidates.alex.preferredLearningSlot,
     viewMode: "Summary",
+    candidateName: demoCandidates.alex.name,
   })
 
   // When candidate changes, update input values
@@ -80,6 +81,7 @@ export default function Home() {
       practiceScore: candidate.practiceScore,
       preferredLearningSlot: candidate.preferredLearningSlot,
       viewMode: "Summary",
+      candidateName: candidate.name,
     })
   }
 

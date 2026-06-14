@@ -71,4 +71,23 @@ export class LocalDemoIQ {
     results.sort((a, b) => b.score - a.score)
     return results.slice(0, topK)
   }
+
+  // Return every sourceId the knowledge base can actually produce.
+  // The Verifier Agent uses this to check that claimed citations really exist
+  // in the synthetic knowledge base — not just that a citation string is present.
+  getAllSourceIds(): string[] {
+    const ids: string[] = []
+    for (const [sourceId, chunks] of Object.entries(knowledgeBase)) {
+      for (let i = 0; i < chunks.length; i++) {
+        ids.push(`${sourceId}#chunk${i}`)
+      }
+    }
+    return ids
+  }
+
+  // Also expose the human-readable document titles (e.g. "AZ-204", "workload")
+  // so the verifier can report which knowledge docs back the claims.
+  getAllDocumentTitles(): string[] {
+    return Object.keys(knowledgeBase)
+  }
 }

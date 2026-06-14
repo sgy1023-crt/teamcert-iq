@@ -11,7 +11,6 @@
 ## 📋 What It Does
 
 TeamCert IQ is a **grounded multi-agent certification readiness system** that helps organizations assess employee certification preparedness using a 7-agent reasoning workflow.
-
 Instead of generic study advice, TeamCert IQ:
 - ✅ **Analyzes** learner profile, workload constraints, and practice scores
 - ✅ **Retrieves** grounded learning content from synthetic knowledge bases
@@ -44,6 +43,47 @@ A **multi-agent reasoning system** that:
 5. **Verifies** all outputs for citation coverage and safety compliance
 
 **ROI Impact**: Reduce failed exam attempts by 40%, save $2,000+ per employee in retake costs.
+
+---
+
+## 🧠 Hybrid Reasoning Architecture (honest version)
+
+TeamCert IQ deliberately separates **deterministic** reasoning from **LLM-assisted** narrative. This is a feature, not a limitation — it keeps the parts that must be trustworthy and reproducible (scores, audits) fully transparent, while letting a real LLM do what it's good at (writing manager-facing coaching prose).
+
+**Deterministic (rules / scoring engine, always run, fully explainable):**
+- Readiness Score — weighted scoring engine (`lib/scoring.ts`): practice 45% + time-fit 15% + workload 10% + weak-domain 20% + evidence 10%. Every input produces the same output; the UI shows the full breakdown.
+- Verifier & Safety Agent — performs real checks: every cited source is looked up in the synthetic knowledge base, citation coverage = grounded claims / total claims, and PII/secret patterns are scanned. It is not a rubber stamp.
+- Learner Profile, Learning Path, Study Plan, Assessment agents — grounded retrieval + rule-based generation with citations.
+
+**LLM-assisted (optional, with automatic local fallback):**
+- Manager Insight Agent — when an OpenAI-compatible or Azure OpenAI endpoint is configured, it sends the full deterministic context (profile, readiness score, risk, weak domains, evidence, verifier result) to a real model and asks for four coaching fields: `managerSummary`, `riskExplanation`, `coachingRecommendation`, `nextBestAction`. If no key is set, the network fails, the call times out (9s), or JSON parsing fails, it falls back to a deterministic local template. The page never breaks either way.
+
+The UI shows which mode produced the manager text:
+- ✨ **Manager Insight: LLM-assisted** — a real model generated the narrative
+- ⚙️ **Manager Insight: Local fallback** — deterministic template used (no credentials or call failed)
+
+> The core local demo uses transparent input-driven scoring and deterministic verifier checks. The Manager Insight Agent optionally uses a real LLM when API credentials are provided, with local fallback for reliable demos. The architecture is Foundry-ready for model-backed evaluation.
+
+### Enabling the LLM (optional)
+
+Create `.env.local` with **one** of the following sets. The adapter auto-detects which is present.
+
+OpenAI-compatible (also works with proxies, vLLM, OpenRouter, etc.):
+```
+OPENAI_API_KEY=sk-...
+OPENAI_BASE_URL=https://api.openai.com/v1   # optional
+OPENAI_MODEL=gpt-4o-mini                     # optional
+```
+
+Azure OpenAI:
+```
+AZURE_OPENAI_API_KEY=...
+AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com
+AZURE_OPENAI_DEPLOYMENT=<deployment-name>
+AZURE_OPENAI_API_VERSION=2024-10-21          # optional
+```
+
+Without any of these, the app runs entirely on the deterministic engine + local templates — no key, no network, no cost.
 
 ---
 
