@@ -13,6 +13,7 @@ interface HeroSectionProps {
   onCandidateChange: (candidate: "alex" | "maya" | "jordan") => void
   inputValues: LearnerInput
   onInputChange: (values: Partial<LearnerInput>) => void
+  llmConfigured: boolean | null
 }
 
 const badges = [
@@ -28,7 +29,7 @@ const candidateInfo = {
   jordan: { name: "Jordan Lee", role: "Data Engineer", cert: "DP-203", score: 86, readiness: "82-92" },
 }
 
-export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange, inputValues, onInputChange }: HeroSectionProps) {
+export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandidateChange, inputValues, onInputChange, llmConfigured }: HeroSectionProps) {
   return (
     <section className="w-full py-16 md:py-24 px-6 md:px-12 lg:px-16 text-center">
       {/* Title */}
@@ -301,6 +302,46 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               LOCAL_DEMO_IQ
             </span>{" "}
             — Retrieval from synthetic knowledge base with citation support
+          </p>
+        </div>
+
+        {/* Manager Insight mode — surfaced on the homepage so judges see
+            the hybrid architecture before running anything. */}
+        <div
+          className="mt-3 mx-auto max-w-2xl flex items-start gap-3 px-5 py-4 rounded-xl border text-left"
+          style={
+            llmConfigured
+              ? { background: "oklch(96% 0.03 160)", borderColor: "oklch(80% 0.10 160)" }
+              : { background: "oklch(97% 0.01 260)", borderColor: "oklch(85% 0.02 260)" }
+          }
+          role="status"
+        >
+          <span
+            className="mt-0.5 shrink-0 size-5 rounded-full flex items-center justify-center text-xs"
+            style={
+              llmConfigured
+                ? { background: "oklch(55% 0.16 160)", color: "white" }
+                : { background: "oklch(70% 0.02 260)", color: "white" }
+            }
+            aria-hidden="true"
+          >
+            {llmConfigured ? "✓" : "i"}
+          </span>
+          <p style={{ fontSize: "0.875rem", color: llmConfigured ? "oklch(33% 0.10 160)" : "oklch(40% 0.04 250)" }}>
+            <span className="font-semibold">
+              Manager Insight Agent:
+            </span>{" "}
+            {llmConfigured === null ? (
+              "checking LLM backend…"
+            ) : llmConfigured ? (
+              <>
+                <strong>LLM-assisted</strong> — a real model generates the manager coaching narrative. Scoring & verifier stay deterministic.
+              </>
+            ) : (
+              <>
+                <strong>Local fallback</strong> — deterministic template. Set <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>OPENAI_API_KEY</code> or <code className="px-1 py-0.5 rounded" style={{ background: "oklch(94% 0.01 260)", fontFamily: "var(--font-mono)", fontSize: "0.8rem" }}>AZURE_OPENAI_API_KEY</code> to enable LLM-assisted mode.
+              </>
+            )}
           </p>
         </div>
       </div>

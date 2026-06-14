@@ -53,7 +53,17 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [agentTraces, setAgentTraces] = useState<AgentTrace[]>([])
   const [selectedCandidate, setSelectedCandidate] = useState<"alex" | "maya" | "jordan">("alex")
+  const [llmConfigured, setLlmConfigured] = useState<boolean | null>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+
+  // On mount, ask the backend whether a real LLM is configured so the
+  // homepage can show the Manager Insight mode before any run.
+  useEffect(() => {
+    fetch("/api/status")
+      .then((r) => r.json())
+      .then((d) => setLlmConfigured(Boolean(d.llmConfigured)))
+      .catch(() => setLlmConfigured(false))
+  }, [])
 
   // Current input values (editable by user)
   const [inputValues, setInputValues] = useState<LearnerInput>({
@@ -225,6 +235,7 @@ export default function Home() {
           onCandidateChange={handleCandidateChange}
           inputValues={inputValues}
           onInputChange={(updates) => setInputValues({ ...inputValues, ...updates })}
+          llmConfigured={llmConfigured}
         />
 
         {/* Divider */}
@@ -324,7 +335,7 @@ export default function Home() {
                 className="font-semibold"
                 style={{ color: "oklch(45% 0.02 250)", fontSize: "1rem" }}
               >
-                Click &quot;Run Default Demo&quot; to see the 7-agent assessment in action
+                Click &quot;Run 7-Agent Readiness Assessment&quot; to see the 7-agent assessment in action
               </p>
               <p style={{ fontSize: "0.875rem", color: "oklch(60% 0.015 250)", marginTop: "0.5rem" }}>
                 Results will appear here with 8 detailed tabs
