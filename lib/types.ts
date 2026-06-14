@@ -104,5 +104,19 @@ export interface FinalOutput {
     weakDomainPenalty: number
     evidenceBonus: number
     finalScore: number
+    weights: {
+      practice: number
+      timeFit: number
+      workload: number
+      weakDomain: number
+      evidence: number
+    }
+    rawScores: {
+      practice: number
+      timeFit: number
+      workload: number
+      weakDomain: number
+      evidence: number
+    }
   }
 }

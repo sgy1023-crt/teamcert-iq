@@ -6,6 +6,7 @@ import { StudyPlanGeneratorAgent } from "./study-plan-generator-agent"
 import { AssessmentAgent } from "./assessment-agent"
 import { ManagerInsightsAgent } from "./manager-insights-agent"
 import { VerifierAgent } from "./verifier-agent"
+import { calculateReadinessScore } from "../scoring"
 
 export class Coordinator {
   private learnerProfileAgent: LearnerProfileAgent
@@ -56,90 +57,23 @@ export class Coordinator {
     )
     traces.push(trace6)
 
-    // Step 7: Compose final output
-    const { readinessScore, readinessLevel, recommendation, scoreBreakdown } = this.calculateReadiness(
-      profile,
-      learningPath,
-      studyPlan,
-      verifierReport
-    )
-
-    const finalOutput: FinalOutput = {
-      learnerProfile: profile,
-      learningPath,
-      studyPlan,
-      assessment,
-      managerInsights,
-      verifierReport,
-      trace: traces,
-      readinessScore,
-      readinessLevel,
-      recommendation,
-      scoreBreakdown,
-    }
-
-    return finalOutput
-  }
-
-  private calculateReadiness(
-    profile: any,
-    learningPath: any,
-    studyPlan: any,
-    verifierReport: any
-  ): {
-    readinessScore: number
-    readinessLevel: "Low" | "Moderate" | "High"
-    recommendation: string
-    scoreBreakdown: {
-      practiceScoreContribution: number
-      timeAvailabilityAdjustment: number
-      meetingLoadPenalty: number
-      weakDomainPenalty: number
-      evidenceBonus: number
-      finalScore: number
-    }
-  } {
-    // Start from practice score as base
-    let practiceScoreContribution = profile.practiceScore
-
-    // Time availability adjustment (0 to +15 points)
-    let timeAvailabilityAdjustment = 0
-    if (profile.availableHoursPerWeek >= 10) {
-      timeAvailabilityAdjustment = 15
-    } else if (profile.availableHoursPerWeek >= 6) {
-      timeAvailabilityAdjustment = 8
-    } else if (profile.availableHoursPerWeek >= 3) {
-      timeAvailabilityAdjustment = 3
-    }
-
-    // Meeting load penalty (0 to -20 points)
-    let meetingLoadPenalty = 0
-    if (profile.meetingHoursPerWeek > 25) {
-      meetingLoadPenalty = -20
-    } else if (profile.meetingHoursPerWeek > 20) {
-      meetingLoadPenalty = -12
-    } else if (profile.meetingHoursPerWeek > 15) {
-      meetingLoadPenalty = -6
-    }
-
-    // Weak domain penalty (0 to -15 points)
+    // Step 7: Calculate readiness score using unified scoring engine
     const highPrioritySkills = learningPath.recommendedSkills.filter((s: any) => s.priority === "High")
-    let weakDomainPenalty = Math.min(highPrioritySkills.length * -5, -15)
 
-    // Evidence/verifier bonus (0 to +10 points)
-    let evidenceBonus = Math.round(verifierReport.citationCoverage * 10)
-
-    // Calculate final score
-    let finalScore = practiceScoreContribution + timeAvailabilityAdjustment + meetingLoadPenalty + weakDomainPenalty + evidenceBonus
-
-    // Clamp to 0-100
-    finalScore = Math.max(0, Math.min(100, finalScore))
+    const scoringResult = calculateReadinessScore({
+      practiceScore: profile.practiceScore,
+      availableStudyHoursPerWeek: profile.availableHoursPerWeek,
+      meetingHoursPerWeek: profile.meetingHoursPerWeek,
+      weakDomainsCount: highPrioritySkills.length,
+      evidenceSourcesCount: learningPath.sources.length,
+      verifierStatus: verifierReport.verdict,
+    })
 
     // Determine readiness level
     let readinessLevel: "Low" | "Moderate" | "High" = "Moderate"
-    if (finalScore >= 75) {
+    if (scoringResult.finalScore >= 75) {
       readinessLevel = "High"
-    } else if (finalScore < 50) {
+    } else if (scoringResult.finalScore < 50) {
       readinessLevel = "Low"
     }
 
@@ -153,18 +87,35 @@ export class Coordinator {
       recommendation = `Extend your preparation timeline for ${profile.certification}. Address foundational gaps before attempting the exam. Consider baseline skill building for 8-12 weeks.`
     }
 
-    return {
-      readinessScore: Math.round(finalScore),
+    const finalOutput: FinalOutput = {
+      learnerProfile: profile,
+      learningPath,
+      studyPlan,
+      assessment,
+      managerInsights,
+      verifierReport,
+      trace: traces,
+      readinessScore: scoringResult.finalScore,
       readinessLevel,
       recommendation,
       scoreBreakdown: {
-        practiceScoreContribution,
-        timeAvailabilityAdjustment,
-        meetingLoadPenalty,
-        weakDomainPenalty,
-        evidenceBonus,
-        finalScore: Math.round(finalScore),
+        practiceScoreContribution: scoringResult.practiceScore,
+        timeAvailabilityAdjustment: scoringResult.timeFitScore,
+        meetingLoadPenalty: scoringResult.workloadScore,
+        weakDomainPenalty: scoringResult.weakDomainScore,
+        evidenceBonus: scoringResult.evidenceScore,
+        finalScore: scoringResult.finalScore,
+        weights: {
+          practice: 45,
+          timeFit: 15,
+          workload: 10,
+          weakDomain: 20,
+          evidence: 10,
+        },
+        rawScores: scoringResult.rawScores,
       },
     }
+
+    return finalOutput
   }
 }
