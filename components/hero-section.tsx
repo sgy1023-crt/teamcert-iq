@@ -1,10 +1,61 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { DemoScenarioCard } from "./demo-scenario-card"
 import type { LearnerInput } from "@/lib/types"
+
+// SliderField — keeps the drag in LOCAL state so dragging never triggers a
+// parent re-render (which is what makes controlled range inputs freeze and
+// only move one direction). The parent only learns the value on pointer-up
+// / blur, which is all we need since the value is read when Run is clicked.
+function SliderField({
+  label,
+  value,
+  min,
+  max,
+  suffix = "",
+  onCommit,
+  disabled,
+}: {
+  label: string
+  value: number
+  min: number
+  max: number
+  suffix?: string
+  onCommit: (v: number) => void
+  disabled?: boolean
+}) {
+  const [local, setLocal] = useState(value)
+
+  // Sync from parent when the preset changes (e.g. switching candidate).
+  // Does not fire mid-drag because the parent value is static while dragging.
+  useEffect(() => {
+    setLocal(value)
+  }, [value])
+
+  return (
+    <div>
+      <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
+        {label}: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{local}{suffix}</span>
+      </label>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        value={local}
+        onChange={(e) => setLocal(parseInt(e.target.value))}
+        onPointerUp={(e) => onCommit(parseInt(e.currentTarget.value))}
+        onBlur={(e) => onCommit(parseInt(e.currentTarget.value))}
+        disabled={disabled}
+        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        style={{ accentColor: "oklch(50% 0.18 260)" }}
+      />
+    </div>
+  )
+}
 
 interface HeroSectionProps {
   onRunDemo: () => void
@@ -135,62 +186,35 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               borderColor: "oklch(88% 0.008 250)",
             }}
           >
-            {/* Practice Score */}
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
-                Practice Score: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.practiceScore}%</span>
-              </label>
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={inputValues.practiceScore}
-                onChange={(e) => onInputChange({ practiceScore: parseInt(e.target.value) })}
-                disabled={isLoading}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  accentColor: "oklch(50% 0.18 260)",
-                }}
-              />
-            </div>
+            <SliderField
+              label="Practice Score"
+              value={inputValues.practiceScore}
+              min={0}
+              max={100}
+              suffix="%"
+              onCommit={(v) => onInputChange({ practiceScore: v })}
+              disabled={isLoading}
+            />
 
-            {/* Available Study Hours */}
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
-                Available Study Hours/Week: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.availableStudyHoursPerWeek}h</span>
-              </label>
-              <input
-                type="range"
-                min={0}
-                max={20}
-                value={inputValues.availableStudyHoursPerWeek}
-                onChange={(e) => onInputChange({ availableStudyHoursPerWeek: parseInt(e.target.value) })}
-                disabled={isLoading}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  accentColor: "oklch(50% 0.18 260)",
-                }}
-              />
-            </div>
+            <SliderField
+              label="Available Study Hours/Week"
+              value={inputValues.availableStudyHoursPerWeek}
+              min={0}
+              max={20}
+              suffix="h"
+              onCommit={(v) => onInputChange({ availableStudyHoursPerWeek: v })}
+              disabled={isLoading}
+            />
 
-            {/* Meeting Hours */}
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
-                Meeting Hours/Week: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.meetingHoursPerWeek}h</span>
-              </label>
-              <input
-                type="range"
-                min={0}
-                max={40}
-                value={inputValues.meetingHoursPerWeek}
-                onChange={(e) => onInputChange({ meetingHoursPerWeek: parseInt(e.target.value) })}
-                disabled={isLoading}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  accentColor: "oklch(50% 0.18 260)",
-                }}
-              />
-            </div>
+            <SliderField
+              label="Meeting Hours/Week"
+              value={inputValues.meetingHoursPerWeek}
+              min={0}
+              max={40}
+              suffix="h"
+              onCommit={(v) => onInputChange({ meetingHoursPerWeek: v })}
+              disabled={isLoading}
+            />
 
             <p className="text-xs" style={{ color: "oklch(55% 0.025 250)", fontStyle: "italic" }}>
               Tip: Select a preset candidate above, then adjust these parameters to see how scores change dynamically.
