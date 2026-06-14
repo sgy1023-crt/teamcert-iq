@@ -56,7 +56,7 @@ TeamCert IQ deliberately separates **deterministic** reasoning from **LLM-assist
 - Learner Profile, Learning Path, Study Plan, Assessment agents — grounded retrieval + rule-based generation with citations.
 
 **LLM-assisted (optional, with automatic local fallback):**
-- Manager Insight Agent — when an OpenAI-compatible or Azure OpenAI endpoint is configured, it sends the full deterministic context (profile, readiness score, risk, weak domains, evidence, verifier result) to a real model and asks for four coaching fields: `managerSummary`, `riskExplanation`, `coachingRecommendation`, `nextBestAction`. If no key is set, the network fails, the call times out (9s), or JSON parsing fails, it falls back to a deterministic local template. The page never breaks either way.
+- Manager Insight Agent — when any OpenAI-compatible endpoint (OpenAI, DeepSeek, Moonshot, OpenRouter, SiliconFlow, Together, Zhipu, Qwen, local Ollama/vLLM, etc.) or Azure OpenAI is configured, it sends the full deterministic context (profile, readiness score, risk, weak domains, evidence, verifier result) to a real model and asks for four coaching fields: `managerSummary`, `riskExplanation`, `coachingRecommendation`, `nextBestAction`. If no key is set, the network fails, the call times out (12s), or JSON parsing fails, it falls back to a deterministic local template. The page never breaks either way.
 
 The UI shows which mode produced the manager text:
 - ✨ **Manager Insight: LLM-assisted** — a real model generated the narrative
@@ -66,24 +66,52 @@ The UI shows which mode produced the manager text:
 
 ### Enabling the LLM (optional)
 
-Create `.env.local` with **one** of the following sets. The adapter auto-detects which is present.
+Create `.env.local` and add **one** of the following. The adapter auto-detects which provider is configured.
 
-OpenAI-compatible (also works with proxies, vLLM, OpenRouter, etc.):
+**Custom OpenAI-compatible endpoint** (local Ollama, vLLM, proxies, etc.):
+```bash
+LLM_API_KEY=sk-...
+LLM_BASE_URL=http://localhost:11434/v1  # your endpoint
+LLM_MODEL=qwen2.5:7b                     # optional
+LLM_PROVIDER_NAME=ollama                 # optional display name
 ```
+
+**Named providers** (smart defaults — just add the key):
+```bash
+# OpenAI
 OPENAI_API_KEY=sk-...
-OPENAI_BASE_URL=https://api.openai.com/v1   # optional
-OPENAI_MODEL=gpt-4o-mini                     # optional
+
+# DeepSeek (recommended — cheap and fast)
+DEEPSEEK_API_KEY=sk-...
+
+# Moonshot (月之暗面)
+MOONSHOT_API_KEY=sk-...
+
+# OpenRouter (aggregates 200+ models)
+OPENROUTER_API_KEY=sk-...
+
+# SiliconFlow (国内可用)
+SILICONFLOW_API_KEY=sk-...
+
+# Together AI
+TOGETHER_API_KEY=...
+
+# Zhipu GLM (智谱)
+ZHIPU_API_KEY=...
+
+# Qwen (通义千问)
+QWEN_API_KEY=sk-...
 ```
 
-Azure OpenAI:
-```
+**Azure OpenAI**:
+```bash
 AZURE_OPENAI_API_KEY=...
-AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com
+AZURE_OPENAI_ENDPOINT=https://<resource>.openai.azure.com
 AZURE_OPENAI_DEPLOYMENT=<deployment-name>
-AZURE_OPENAI_API_VERSION=2024-10-21          # optional
+AZURE_OPENAI_API_VERSION=2024-10-21  # optional
 ```
 
-Without any of these, the app runs entirely on the deterministic engine + local templates — no key, no network, no cost.
+Without any key, the app runs entirely on the deterministic engine + local templates — no key, no network, no cost. Once configured, restart `pnpm dev` and the homepage status banner will show which provider is active.
 
 ---
 
