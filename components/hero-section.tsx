@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 import { DemoScenarioCard } from "./demo-scenario-card"
 import type { LearnerInput } from "@/lib/types"
@@ -140,13 +139,17 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
                 Practice Score: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.practiceScore}%</span>
               </label>
-              <Slider
-                value={[inputValues.practiceScore]}
-                onValueChange={(values) => onInputChange({ practiceScore: values[0] })}
+              <input
+                type="range"
                 min={0}
                 max={100}
-                step={1}
+                value={inputValues.practiceScore}
+                onChange={(e) => onInputChange({ practiceScore: parseInt(e.target.value) })}
                 disabled={isLoading}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  accentColor: "oklch(50% 0.18 260)",
+                }}
               />
             </div>
 
@@ -155,13 +158,17 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
                 Available Study Hours/Week: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.availableStudyHoursPerWeek}h</span>
               </label>
-              <Slider
-                value={[inputValues.availableStudyHoursPerWeek]}
-                onValueChange={(values) => onInputChange({ availableStudyHoursPerWeek: values[0] })}
+              <input
+                type="range"
                 min={0}
                 max={20}
-                step={1}
+                value={inputValues.availableStudyHoursPerWeek}
+                onChange={(e) => onInputChange({ availableStudyHoursPerWeek: parseInt(e.target.value) })}
                 disabled={isLoading}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  accentColor: "oklch(50% 0.18 260)",
+                }}
               />
             </div>
 
@@ -170,13 +177,17 @@ export function HeroSection({ onRunDemo, isLoading, selectedCandidate, onCandida
               <label className="block text-sm font-medium mb-2" style={{ color: "oklch(35% 0.02 250)" }}>
                 Meeting Hours/Week: <span className="font-bold" style={{ color: "oklch(50% 0.18 260)" }}>{inputValues.meetingHoursPerWeek}h</span>
               </label>
-              <Slider
-                value={[inputValues.meetingHoursPerWeek]}
-                onValueChange={(values) => onInputChange({ meetingHoursPerWeek: values[0] })}
+              <input
+                type="range"
                 min={0}
                 max={40}
-                step={1}
+                value={inputValues.meetingHoursPerWeek}
+                onChange={(e) => onInputChange({ meetingHoursPerWeek: parseInt(e.target.value) })}
                 disabled={isLoading}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  accentColor: "oklch(50% 0.18 260)",
+                }}
               />
             </div>
 
