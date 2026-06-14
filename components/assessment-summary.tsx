@@ -36,14 +36,14 @@ export function AssessmentSummary({ result }: AssessmentSummaryProps) {
             💡 What This Result Means
           </p>
           <p style={{ fontSize: "0.9375rem", color: "oklch(45% 0.025 250)", lineHeight: 1.7 }}>
-            Alex is <strong style={{ color: riskColor.text }}>not yet fully ready</strong> for AZ-204. TeamCert IQ identified{" "}
+            This candidate is <strong style={{ color: riskColor.text }}>not yet fully ready</strong> for {result.learnerProfile.certification}. TeamCert IQ identified{" "}
             <strong style={{ color: riskColor.text }}>{result.learnerProfile.baselineRisk.toLowerCase()} readiness risk</strong> because
-            his practice score is low ({result.learnerProfile.practiceScore}%) and his weakest domains involve{" "}
+            their practice score is {result.learnerProfile.practiceScore < 70 ? "low" : result.learnerProfile.practiceScore < 80 ? "moderate" : "high"} ({result.learnerProfile.practiceScore}%) and their weakest domains involve{" "}
             <strong style={{ color: "oklch(30% 0.015 250)" }}>{weakDomains || "core certification skills"}</strong>.
           </p>
           <p style={{ fontSize: "0.9375rem", color: "oklch(45% 0.025 250)", lineHeight: 1.7, marginTop: "0.75rem" }}>
             The system recommends a <strong style={{ color: "oklch(30% 0.015 250)" }}>{result.studyPlan.durationDays}-day focused study plan</strong> before
-            final certification review. For managers, Alex should be treated as <strong style={{ color: riskColor.text }}>"needs targeted support,"</strong> not
+            final certification review. For managers, this candidate should be treated as <strong style={{ color: riskColor.text }}>"needs targeted support,"</strong> not
             "ready for exam scheduling."
           </p>
         </div>
