@@ -407,13 +407,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🎥 Demo Video
 
-> **Video demo coming soon!** 
-> 
-> Will showcase:
-> - Full 7-agent workflow in action
-> - Interactive UI with typing animations
-> - All 8 result tabs and visualizations
-> - Real-time grounding verification
+**[Watch Full Demo Video](./demo/teamcert-iq-demo.mp4)** (64MB, ~1 min)
+
+The video showcases:
+- Full 7-agent workflow in action
+- Interactive UI with typing animations
+- All 8 result tabs and visualizations
+- Real-time grounding verification
+- Agent collaboration theater with replay
 
 ---
 
