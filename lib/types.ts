@@ -38,8 +38,16 @@ export interface LearningPathResult {
     priority: "High" | "Medium" | "Low"
     currentScore?: number
     targetScore: number
+    llmReason?: string
   }>
   sources: string[]
+  // Full retrieved chunks (sourceId, title, text, score) so the UI can show
+  // the grounding evidence behind each recommendation in a citation explorer.
+  retrievedChunks?: RetrievedChunk[]
+  generationMode?: "llm" | "naive"
+  llmProvider?: string
+  llmModel?: string
+  llmRationale?: string
 }
 
 export interface StudyPlanResult {

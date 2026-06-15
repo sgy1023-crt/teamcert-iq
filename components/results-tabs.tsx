@@ -3,6 +3,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import type { FinalOutput } from "@/lib/types"
+import { SkillRadar, ReadinessRing, LearningTimeline, TeamComparison, SourceExplorer } from "@/components/visualizations"
+import { AgentTheater } from "@/components/agent-theater"
+import { AICoach } from "@/components/ai-coach"
 
 const tabs = [
   { id: "recommendation", icon: "📊", label: "Final Recommendation" },
@@ -20,7 +23,7 @@ interface ResultsTabsProps {
 }
 
 interface ContentCardProps {
-  title: string
+  title: React.ReactNode
   children: React.ReactNode
 }
 
@@ -181,88 +184,149 @@ export function ResultsTabs({ result }: ResultsTabsProps) {
           {/* Tab 1: Final Recommendation */}
           <TabsContent value="recommendation" className="animate-fadeIn">
             <ContentCard title="📊 Final Recommendation">
-              <div
-                className="flex items-start gap-4 p-5 rounded-xl mb-6"
-                style={{ background: "oklch(96% 0.012 260)", border: "1px solid oklch(84% 0.03 260)" }}
-              >
-                <span className="text-3xl shrink-0" aria-hidden="true">🎓</span>
-                <div>
-                  <p className="font-semibold mb-1" style={{ color: "oklch(28% 0.015 250)", fontSize: "1.0625rem" }}>
-                    Certification Readiness: {result.learnerProfile.certification}
-                  </p>
-                  <p style={{ fontSize: "0.9375rem", color: "oklch(48% 0.025 250)" }}>
-                    {result.recommendation}
-                  </p>
+              <div className="flex flex-col md:flex-row gap-8 items-start mb-6">
+                {/* Readiness Ring */}
+                <div className="shrink-0">
+                  <ReadinessRing score={result.readinessScore} level={result.readinessLevel} />
+                </div>
+                {/* Key info */}
+                <div className="flex-1">
+                  <div
+                    className="flex items-start gap-4 p-5 rounded-xl mb-4"
+                    style={{ background: "oklch(96% 0.012 260)", border: "1px solid oklch(84% 0.03 260)" }}
+                  >
+                    <span className="text-3xl shrink-0" aria-hidden="true">🎓</span>
+                    <div>
+                      <p className="font-semibold mb-1" style={{ color: "oklch(28% 0.015 250)", fontSize: "1.0625rem" }}>
+                        Certification Readiness: {result.learnerProfile.certification}
+                      </p>
+                      <p style={{ fontSize: "0.9375rem", color: "oklch(48% 0.025 250)" }}>
+                        {result.recommendation}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-0">
+                    <InfoRow label="Role" value={result.learnerProfile.role} />
+                    <InfoRow label="Target Certification" value={result.learnerProfile.certification} highlight />
+                    <InfoRow label="Current Practice Score" value={`${result.learnerProfile.practiceScore}%`} />
+                    <InfoRow label="Risk Level" value={result.learnerProfile.baselineRisk} />
+                    <InfoRow label="Recommended Study Timeline" value={`${result.studyPlan.durationDays} Days`} />
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-0">
-                <InfoRow label="Role" value={result.learnerProfile.role} />
-                <InfoRow label="Target Certification" value={result.learnerProfile.certification} highlight />
-                <InfoRow label="Current Practice Score" value={`${result.learnerProfile.practiceScore}%`} />
-                <InfoRow label="Estimated Readiness" value={`${result.readinessScore}%`} highlight />
-                <InfoRow label="Risk Level" value={result.learnerProfile.baselineRisk} />
-                <InfoRow label="Recommended Study Timeline" value={`${result.studyPlan.durationDays} Days`} />
+              {/* Team Comparison */}
+              <div className="mt-2 pt-5" style={{ borderTop: "1px solid oklch(92% 0.006 250)" }}>
+                <h4 className="font-semibold mb-4" style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)" }}>
+                  📈 Team Benchmark
+                </h4>
+                <TeamComparison
+                  score={result.readinessScore}
+                  studyDays={result.studyPlan.durationDays}
+                  role={result.learnerProfile.role}
+                />
               </div>
             </ContentCard>
           </TabsContent>
 
           {/* Tab 2: Learning Path */}
           <TabsContent value="learning-path" className="animate-fadeIn">
-            <ContentCard title="🎯 Learning Path">
+            <ContentCard title={
+              <div className="flex items-center gap-3 flex-wrap">
+                <span>🎯 Learning Path</span>
+                {result.learningPath.generationMode === "llm" && result.learningPath.llmProvider && (
+                  <span
+                    className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
+                    style={{
+                      background: "oklch(94% 0.04 160)",
+                      color: "oklch(35% 0.12 160)",
+                      border: "1px solid oklch(85% 0.08 160)",
+                    }}
+                  >
+                    <span>✨</span>
+                    <span>
+                      Powered by {result.learningPath.llmProvider}
+                      {result.learningPath.llmModel && ` / ${result.learningPath.llmModel}`}
+                    </span>
+                  </span>
+                )}
+              </div>
+            }>
+              {result.learningPath.llmRationale && (
+                <div className="mb-6 p-4 rounded-xl border" style={{ background: "oklch(96% 0.025 160)", borderColor: "oklch(80% 0.10 160)" }}>
+                  <p className="font-semibold mb-1.5" style={{ fontSize: "0.8125rem", color: "oklch(45% 0.02 250)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Learning Strategy
+                  </p>
+                  <p style={{ fontSize: "0.9375rem", color: "oklch(30% 0.015 250)", lineHeight: 1.7 }}>
+                    {result.learningPath.llmRationale}
+                  </p>
+                </div>
+              )}
+              {/* Skill Radar Chart */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3" style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)" }}>
+                  Skill Proficiency Radar
+                </h4>
+                <SkillRadar skills={result.learningPath.recommendedSkills.map(s => ({ skill: s.skill, currentScore: s.currentScore, targetScore: s.targetScore }))} />
+              </div>
+              {/* Learning Timeline */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3" style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)" }}>
+                  Learning Timeline
+                </h4>
+                <LearningTimeline weeks={result.learningPath.recommendedSkills.map(s => ({ skill: s.skill, priority: s.priority, llmReason: s.llmReason }))} />
+              </div>
+              {/* Skill detail list */}
               <div className="flex flex-col gap-4">
                 {result.learningPath.recommendedSkills.map((skill, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-4 rounded-xl border"
+                    className="p-4 rounded-xl border"
                     style={{
                       background: "oklch(100% 0 0)",
                       borderColor: "oklch(90% 0.006 250)",
                     }}
                   >
-                    <div className="flex items-center gap-4">
-                      <span
-                        className="text-sm font-semibold px-2 py-1 rounded-lg"
-                        style={{ background: "oklch(94% 0.015 260)", color: "oklch(40% 0.12 260)", fontSize: "0.8125rem" }}
-                      >
-                        Week {idx + 1}
-                      </span>
-                      <span style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)", fontWeight: 500 }}>
-                        {skill.skill}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {skill.currentScore && (
-                        <span style={{ fontSize: "0.875rem", color: "oklch(55% 0.025 250)" }}>
-                          Current: <strong style={{ color: skill.currentScore < 50 ? "oklch(45% 0.15 20)" : "oklch(40% 0.12 160)" }}>{skill.currentScore}%</strong>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-4">
+                        <span
+                          className="text-sm font-semibold px-2 py-1 rounded-lg"
+                          style={{ background: "oklch(94% 0.015 260)", color: "oklch(40% 0.12 260)", fontSize: "0.8125rem" }}
+                        >
+                          Week {idx + 1}
                         </span>
-                      )}
-                      <Tag
-                        text={skill.priority}
-                        color={
-                          skill.priority === "High" ? "red" :
-                          skill.priority === "Medium" ? "amber" : "green"
-                        }
-                      />
+                        <span style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)", fontWeight: 500 }}>
+                          {skill.skill}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {skill.currentScore && (
+                          <span style={{ fontSize: "0.875rem", color: "oklch(55% 0.025 250)" }}>
+                            Current: <strong style={{ color: skill.currentScore < 50 ? "oklch(45% 0.15 20)" : "oklch(40% 0.12 160)" }}>{skill.currentScore}%</strong>
+                          </span>
+                        )}
+                        <Tag
+                          text={skill.priority}
+                          color={
+                            skill.priority === "High" ? "red" :
+                            skill.priority === "Medium" ? "amber" : "green"
+                          }
+                        />
+                      </div>
                     </div>
+                    {skill.llmReason && (
+                      <p className="text-sm mt-2 pl-4 border-l-2" style={{ color: "oklch(50% 0.02 250)", borderColor: "oklch(85% 0.08 160)" }}>
+                        {skill.llmReason}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
               {result.learningPath.sources.length > 0 && (
                 <div className="mt-6 p-4 rounded-xl" style={{ background: "oklch(98% 0.004 250)" }}>
                   <p className="font-semibold mb-2" style={{ fontSize: "0.875rem", color: "oklch(35% 0.02 250)" }}>
-                    Grounded Sources:
+                    Grounded Sources <span style={{ fontSize: "0.75rem", color: "oklch(60% 0.025 250)" }}>(click to explore)</span>
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {result.learningPath.sources.map((source, idx) => (
-                      <span
-                        key={idx}
-                        className="text-xs font-mono px-2 py-1 rounded"
-                        style={{ background: "oklch(92% 0.02 260)", color: "oklch(38% 0.12 260)" }}
-                      >
-                        {source}
-                      </span>
-                    ))}
-                  </div>
+                  <SourceExplorer sources={result.learningPath.sources} chunks={result.learningPath.retrievedChunks} />
                 </div>
               )}
             </ContentCard>
@@ -374,134 +438,25 @@ export function ResultsTabs({ result }: ResultsTabsProps) {
             </ContentCard>
           </TabsContent>
 
-          {/* Tab 5: Manager Insights */}
+          {/* Tab 5: Manager Insights — AI Coach UI */}
           <TabsContent value="manager" className="animate-fadeIn">
-            <ContentCard title="👔 Manager Insights">
-              {/* Generation mode badge */}
-              <div className="flex flex-col gap-2 mb-5">
-                <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border w-fit"
-                  style={
-                    result.managerInsights.generationMode === "llm"
-                      ? { background: "oklch(94% 0.04 160)", borderColor: "oklch(70% 0.12 160)", color: "oklch(38% 0.14 160)" }
-                      : { background: "oklch(96% 0.012 260)", borderColor: "oklch(82% 0.03 260)", color: "oklch(42% 0.10 260)" }
-                  }
-                >
-                  {result.managerInsights.generationMode === "llm" ? "✨ Manager Insight: LLM-assisted" : "⚙️ Manager Insight: Local fallback"}
-                </span>
-                {result.managerInsights.generationMode === "llm" && (result.managerInsights.llmProvider || result.managerInsights.llmModel) && (
-                  <p className="text-xs font-mono" style={{ color: "oklch(50% 0.025 250)" }}>
-                    Generated via{" "}
-                    {result.managerInsights.llmProvider && (
-                      <span className="font-semibold" style={{ color: "oklch(40% 0.10 160)" }}>
-                        {result.managerInsights.llmProvider}
-                      </span>
-                    )}
-                    {result.managerInsights.llmModel && (
-                      <>
-                        {" / "}
-                        <span style={{ color: "oklch(45% 0.08 160)" }}>
-                          {result.managerInsights.llmModel}
-                        </span>
-                      </>
-                    )}
-                  </p>
-                )}
+            <ContentCard title={
+              <div className="flex items-center gap-3">
+                <span>👔 Manager Insights</span>
               </div>
-
-              {/* LLM narrative (only present when an LLM backend is configured) */}
-              {result.managerInsights.generationMode === "llm" && (
-                <div className="space-y-4 mb-6">
-                  {result.managerInsights.managerSummary && (
-                    <NarrativeBlock label="Manager Summary" text={result.managerInsights.managerSummary} />
-                  )}
-                  {result.managerInsights.riskExplanation && (
-                    <NarrativeBlock label="Risk Explanation" text={result.managerInsights.riskExplanation} />
-                  )}
-                  {result.managerInsights.coachingRecommendation && (
-                    <NarrativeBlock label="Coaching Recommendation" text={result.managerInsights.coachingRecommendation} />
-                  )}
-                  {result.managerInsights.nextBestAction && (
-                    <NarrativeBlock label="Next Best Action" text={result.managerInsights.nextBestAction} highlight />
-                  )}
-                </div>
-              )}
-
-              <div
-                className="p-5 rounded-xl mb-6"
-                style={{ background: "oklch(97% 0.008 250)", border: "1px solid oklch(90% 0.006 250)" }}
-              >
-                <p className="font-semibold mb-1" style={{ color: "oklch(28% 0.015 250)" }}>
-                  {result.managerInsights.generationMode === "llm" ? "Deterministic Risk Summary" : "Executive Summary"}
-                </p>
-                <p style={{ fontSize: "0.9375rem", color: "oklch(48% 0.025 250)", lineHeight: 1.7 }}>
-                  {result.managerInsights.riskSummary}
-                </p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div
-                  className="flex items-center justify-between p-4 rounded-xl border"
-                  style={{ background: "oklch(100% 0 0)", borderColor: "oklch(90% 0.006 250)" }}
-                >
-                  <span style={{ fontSize: "0.9rem", color: "oklch(45% 0.02 250)" }}>Risk Level</span>
-                  <Tag
-                    text={result.managerInsights.riskLevel}
-                    color={
-                      result.managerInsights.riskLevel === "High" ? "red" :
-                      result.managerInsights.riskLevel === "Medium" ? "amber" : "green"
-                    }
-                  />
-                </div>
-                <div
-                  className="flex items-center justify-between p-4 rounded-xl border"
-                  style={{ background: "oklch(100% 0 0)", borderColor: "oklch(90% 0.006 250)" }}
-                >
-                  <span style={{ fontSize: "0.9rem", color: "oklch(45% 0.02 250)" }}>Baseline Risk</span>
-                  <Tag
-                    text={result.learnerProfile.baselineRisk}
-                    color={
-                      result.learnerProfile.baselineRisk === "High" ? "red" :
-                      result.learnerProfile.baselineRisk === "Medium" ? "amber" : "green"
-                    }
-                  />
-                </div>
-              </div>
-              {result.managerInsights.teamRecommendations.length > 0 && (
-                <div>
-                  <p className="font-semibold mb-3" style={{ fontSize: "0.9375rem", color: "oklch(28% 0.015 250)" }}>
-                    Recommended Actions:
-                  </p>
-                  <div className="space-y-2">
-                    {result.managerInsights.teamRecommendations.map((rec, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-start gap-2 p-3 rounded-lg"
-                        style={{ background: "oklch(98% 0.004 250)" }}
-                      >
-                        <span style={{ color: "oklch(50% 0.18 260)", fontSize: "0.875rem" }}>•</span>
-                        <span style={{ fontSize: "0.875rem", color: "oklch(35% 0.02 250)" }}>{rec}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+            }>
+              <AICoach insights={result.managerInsights} />
             </ContentCard>
           </TabsContent>
 
-          {/* Tab 6: Agent Trace */}
+          {/* Tab 6: Agent Trace — Theater Mode */}
           <TabsContent value="trace" className="animate-fadeIn">
-            <ContentCard title="🔍 Agent Trace">
-              <div className="flex flex-col gap-0">
-                {result.trace.map((step, idx) => (
-                  <AgentStep
-                    key={idx}
-                    step={idx + 1}
-                    name={step.agentName}
-                    status={step.status}
-                    detail={step.detail}
-                  />
-                ))}
+            <ContentCard title={
+              <div className="flex items-center gap-3">
+                <span>🔍 Agent Collaboration Theater</span>
               </div>
+            }>
+              <AgentTheater trace={result.trace} />
             </ContentCard>
           </TabsContent>
 

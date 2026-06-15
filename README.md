@@ -2,9 +2,137 @@
 
 **Grounded Multi-Agent Certification Readiness for Role-Based Enterprise Upskilling**
 
-[![Microsoft Agents League Hackathon 2026](https://img.shields.io/badge/Microsoft-Agents%20League%202026-blue)](https://github.com/yourusername/teamcert-iq)
-[![Reasoning Agents Track](https://img.shields.io/badge/Track-Reasoning%20Agents-green)](https://github.com/yourusername/teamcert-iq)
+[![Microsoft Agents League Hackathon 2026](https://img.shields.io/badge/Microsoft-Agents%20League%202026-blue)](https://github.com/sgy1023-crt/teamcert-iq)
+[![Reasoning Agents Track](https://img.shields.io/badge/Track-Reasoning%20Agents-green)](https://github.com/sgy1023-crt/teamcert-iq)
 [![Demo](https://img.shields.io/badge/Demo-Live-success)](http://localhost:3000)
+
+---
+
+## 🚀 Quick Start (5 Minutes)
+
+**Never used this before? Here's how:**
+
+### 1. Start the App
+```bash
+cd teamcert-iq-next
+npm install
+npm run dev
+```
+Open http://localhost:3000
+
+### 2. Pick a Demo Scenario
+You'll see **3 pre-built employee profiles** on the homepage:
+- **Alex Chen** — Cloud Solution Architect, ready for AZ-204 (score: 73/100, Moderate)
+- **Sarah Martinez** — Cloud Engineer, high risk (score: 51/100, High Risk)
+- **Michael Kim** — DevOps Engineer, moderate readiness (score: 65/100)
+
+👉 **Click "Alex Chen"** to see the full pipeline.
+
+### 3. Watch the AI Work (15-20 seconds)
+You'll see **7 AI agents** analyze Alex:
+1. 🧑‍💼 Learner Profile Agent — "Parsed role=Cloud Solution Architect, cert=AZ-204..."
+2. 🎯 Learning Path Curator — "Retrieved 3 docs, re-ranked 4 skills via Grok..."
+3. 📅 Study Plan Generator — "Generated 28-day plan..."
+4. 📝 Assessment Agent — "Created 4 practice questions..."
+5. 🛡️ Verifier & Safety — "Audited 3 sources, 80% citation coverage..."
+6. 👔 Manager Insights — "Generated coaching via Grok..."
+7. 🧩 Composer — "Composed final report..."
+
+### 4. Explore the Results (8 Tabs)
+
+**What Each Tab Means:**
+
+#### 📊 **Final Recommendation** (The Big Picture)
+- **Readiness Ring** — Huge animated circle showing score (73/100)
+  - 🔴 Red = Low (0-50) — Not ready, high failure risk
+  - 🟡 Yellow = Moderate (51-75) — Needs focused prep
+  - 🟢 Green = High (76-100) — Ready to schedule exam
+- **Team Benchmark** — "You scored 73, team average is 68, top performer is 89"
+- **Key Stats** — Meeting load, study hours, exam timeline
+
+💡 **Use Case:** Manager asks "Is Alex ready to take AZ-204 next month?" — This tab gives you a yes/no + risk level.
+
+#### 🎯 **Learning Path** (What to Study)
+- **Skill Radar Chart** — Spider chart showing 4 skills
+  - Solid blue = Current level
+  - Dashed green = Target level
+  - **Hover** to see exact scores (e.g., "Azure Functions: 35% → 80%")
+- **Learning Timeline** — Week 1→2→3→4 nodes, click to see each week's focus
+- **Grounded Sources** — Click "AZ-204#chunk0" to see the **original text** the AI used
+  - Shows relevance score (89%)
+  - Proves recommendations aren't hallucinated
+
+💡 **Use Case:** "What should Alex focus on?" — Azure Functions first (High priority), then Service Bus (Medium).
+
+#### 📅 **Study Plan** (Day-by-Day Schedule)
+- **Duration** — 28 days total
+- **Daily Blocks** — "Day 1: Azure Functions, 1.7h, Afternoon"
+- **Reasoning** — "Given 15h meeting load + 20h focus time, afternoon slots recommended"
+
+💡 **Use Case:** Manager needs to know "Can Alex finish prep in 4 weeks with his current schedule?"
+
+#### 📝 **Practice Assessment** (Test Knowledge)
+- **4 Sample Questions** — Multiple choice, grounded in retrieved docs
+- **Correct Answers Highlighted** — Green background
+- **Explanations** — Why each answer is correct/wrong
+- **Source Citations** — "[Source: AZ-204#chunk0 - Azure Functions documentation]"
+
+💡 **Use Case:** "What does Alex need to practice?" — These 4 questions show weak areas.
+
+#### 👔 **Manager Insights** (AI Coach)
+- **4 Conversational Bubbles** (if LLM enabled):
+  - 📊 **Assessment** — "Alex, Cloud Solution Architect, shows moderate readiness (73)..."
+  - ⚠️ **Risk Analysis** — "Practice score of 58 + weak Azure Functions creates moderate risk..."
+  - 🎯 **Coaching Plan** — "Allocate 12h/week focusing on Azure Functions..."
+  - 🚀 **Next Step** — "Schedule a 2-hour session this week to review practice questions"
+- **Additional Data** — Risk level, baseline risk, action items
+
+💡 **Use Case:** "What should I (the manager) do to help Alex?" — Clear coaching recommendations.
+
+#### 🔍 **Agent Trace** (How AI Works)
+- **7 Agents with Typing Animation** — Watch each agent "speak" its findings
+- **Thinking Dots** — Shows AI is processing (3 bouncing dots)
+- **Timestamps** — How long each agent took (e.g., "9550ms")
+- **Replay Button** — Watch the collaboration again
+
+💡 **Use Case:** "How does this AI actually work?" — Full transparency, no black box.
+
+#### ✅ **Verifier & Safety Report** (Trust & Quality)
+- **Grounding Verification** — 80% of claims have citations (✅ Passed)
+- **Hallucination Detection** — 0 unsupported claims (✅ Passed)
+- **PII Sanitization** — No real employee data (✅ Passed)
+- **Final Verdict** — Pass / Pass with Warnings / Fail
+
+💡 **Use Case:** "Can I trust these recommendations?" — Yes, 80%+ grounded in real docs.
+
+#### 📈 **Evaluation Summary** (Quality Metrics)
+- **Grounding Score** — 94%
+- **Safety Score** — 100%
+- **Relevance Score** — 91%
+- **Coherence Score** — 88%
+
+💡 **Use Case:** Technical evaluation for AI quality assessment.
+
+---
+
+## 🎯 Real-World Use Case
+
+**Scenario:** Your company has 50 employees targeting Azure certifications. Exam cost = $165/attempt. Failure rate = 60%.
+
+**Without TeamCert IQ:**
+- You schedule everyone for exams based on "they said they're ready"
+- 30 people fail (60% × 50)
+- Cost: 30 × $165 = **$4,950 wasted**
+
+**With TeamCert IQ:**
+- Run assessment on all 50 employees
+- 20 people score <50 (High Risk) → delay exams, extend study time
+- 15 people score 50-75 (Moderate) → focused 4-week prep on weak skills
+- 15 people score >75 (High) → schedule exams immediately
+- Failure rate drops to 20% (only 10 failures)
+- Cost saved: 20 × $165 = **$3,300 saved**
+
+**Plus:** Managers get coaching recommendations ("Pair Sarah with a mentor", "Protect 2 focus hours daily for Alex").
 
 ---
 
@@ -277,19 +405,15 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📸 Demo Screenshots
+## 🎥 Demo Video
 
-### Homepage
-![Homepage](./screenshots/homepage.png)
-
-### 7-Agent Workflow
-![Agent Progress](./screenshots/agent-progress.png)
-
-### Assessment Complete
-![Results](./screenshots/assessment-complete.png)
-
-### Agent Trace (Grounding Evidence)
-![Agent Trace](./screenshots/agent-trace.png)
+> **Video demo coming soon!** 
+> 
+> Will showcase:
+> - Full 7-agent workflow in action
+> - Interactive UI with typing animations
+> - All 8 result tabs and visualizations
+> - Real-time grounding verification
 
 ---
 
@@ -392,8 +516,7 @@ teamcert-iq-next/
 │   └── iq/
 │       ├── local-demo-iq.ts
 │       └── azure-foundry-iq.ts (scaffold)
-└── public/
-    └── screenshots/
+└── README.md
 ```
 
 ---
