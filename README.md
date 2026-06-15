@@ -407,9 +407,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🎥 Demo Video
 
-**[Watch Full Demo Video](./demo/teamcert-iq-demo.mp4)** (64MB, ~1 min)
+![TeamCert IQ Demo](./demo/teamcert-iq-demo.gif)
 
-The video showcases:
+**[Download Full Video](./demo/teamcert-iq-demo.mp4)** (64MB, high quality)
+
+The demo showcases:
 - Full 7-agent workflow in action
 - Interactive UI with typing animations
 - All 8 result tabs and visualizations
